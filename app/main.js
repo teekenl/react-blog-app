@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import axios from 'axios';
 import {Router, Route, Link, IndexRoute, IndexLink, hashHistory, browserHistory} from 'react-router';
 
 class Signin extends Component {
@@ -24,7 +25,15 @@ class Signin extends Component {
     }
 
     formSignIn(){
-        alert(this.state.email + " " + this.state.password);
+        axios.post('/login',{
+            email: this.state.email,
+            password: this.state.password
+        }).then(function(response) {
+            console.log("response");
+        }).catch(function(err) {
+            console.log("error1");
+        });
+       // alert(this.state.email + " " + this.state.password);
     }
 
     render(){
@@ -71,17 +80,26 @@ class Signup extends Component {
     }
 
     handleNameChange(e) {
-        this.setState({name: e.target.value});
+        this.setState({ name: e.target.value});
     }
 
     formSignUp() {
-        alert(this.state.email + " " + this.state.password );
+        axios.post('/register',{
+            'name': this.state.name,
+            'email': this.state.email,
+            'password': this.state.password
+        }).then(function(response) {
+            console.log(response);
+        }).catch(function(err) {
+            console.log(err);
+        });
+        //alert(this.state.email + " " + this.state.password );
     }
 
     render() {
         return(
             <div>
-                <form className="form-signin">
+                <form className="form-signin" action="/register" method="post">
                     <h2 className="form-signin-heading">Please sign up</h2>
                     <label htmlFor="inputName" className="sr-only">Name</label>
                     <input type="name" onChange={this.handleNameChange} id="inputName" className="form-control" placeholder="Name" required />
