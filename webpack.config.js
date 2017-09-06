@@ -1,17 +1,27 @@
 const path = require('path');
+
 module.exports = {
-    entry: './main.js',
+    entry: './app/main.js',
     output: {
         path: path.resolve('dist'),
-        filename: 'index_bundle.js'
-    },
-    devServer: {
-        port: 7777
+        filename: 'bundle.js'
     },
     module: {
         loaders: [
-            { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
-            { test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ }
+            { test: /\.js$/, loader: 'babel-loader',
+                include: path.join(__dirname, 'app'),
+                exclude: /node_modules/,
+                query: {
+                        presets: ['es2015', 'react']
+                }
+            },
+            { test: /\.jsx$/, loader: 'babel-loader',
+                include: path.join(__dirname, 'app'),
+                exclude: /node_modules/,
+                query: {
+                    presets: ['es2015', 'react']
+                }
+            }
         ]
     }
 };
