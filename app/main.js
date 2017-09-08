@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-//import fetch from 'isomorphic-fetch';
 import {Router, Route, Link, IndexRoute, IndexLink, hashHistory, browserHistory} from 'react-router';
 
 class Signin extends Component {
@@ -26,8 +25,6 @@ class Signin extends Component {
     }
 
     formSignIn(){
-       
-        /*
         axios.post('/login',{
             email: this.state.email,
             password: this.state.password
@@ -99,7 +96,6 @@ class Signup extends Component {
             'email': this.state.email,
             'password': this.state.password
         }).then(function(response) {
-
             if(response.errorCode) {
                 throw response.errorMessage;
             } else if(response && response !== "Failure"){
