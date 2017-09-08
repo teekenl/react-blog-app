@@ -1,10 +1,14 @@
 const path = require('path');
 
+// multiple entry point support
 module.exports = {
-    entry: './app/main.js',
+    entry: {
+        home: './app/home.js',
+        main: './app/main.js'
+    },
     output: {
         path: path.resolve('dist'),
-        filename: 'bundle.js'
+        filename: '[name].bundle.js'
     },
     module: {
         loaders: [

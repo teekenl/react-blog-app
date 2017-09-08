@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+//import fetch from 'isomorphic-fetch';
 import {Router, Route, Link, IndexRoute, IndexLink, hashHistory, browserHistory} from 'react-router';
 
 class Signin extends Component {
     constructor(props){
         super(props);
         this.state = {
-            email : "USEREMAIL",
-            password: "USERPASSWORD"
+            email : "",
+            password: ""
         };
 
         this.formSignIn = this.formSignIn.bind(this);
@@ -25,15 +26,25 @@ class Signin extends Component {
     }
 
     formSignIn(){
+       
+        /*
         axios.post('/login',{
             email: this.state.email,
             password: this.state.password
         }).then(function(response) {
-            console.log("response");
+            console.log(response);
+            if(response.errorCode) {
+                throw response.errorMessage;
+            } else if(response && response !== "Failure") {
+                localStorage.setItem("username",response.name);
+                window.location="home";
+            } else{
+                console.log("Please don't leave username or password blank");
+            }
         }).catch(function(err) {
-            console.log("error1");
+            if(err) console.log(err);
         });
-       // alert(this.state.email + " " + this.state.password);
+         // alert(this.state.email + " " + this.state.password);*/
     }
 
     render(){
@@ -55,14 +66,13 @@ class Signin extends Component {
     }
 }
 
-
 class Signup extends Component {
     constructor(props){
         super(props);
         this.state = {
-            name: "NAME",
-            email : "USEREMAIL",
-            password: "USERPASSWORD"
+            name: "",
+            email : "",
+            password: ""
         };
 
         this.formSignUp = this.formSignUp.bind(this);
@@ -89,9 +99,17 @@ class Signup extends Component {
             'email': this.state.email,
             'password': this.state.password
         }).then(function(response) {
-            console.log(response);
+
+            if(response.errorCode) {
+                throw response.errorMessage;
+            } else if(response && response !== "Failure"){
+                localStorage.setItem("username",response.name);
+                window.location="home";
+            } else{
+                console.log("Please don't leave username, email or password blank");
+            }
         }).catch(function(err) {
-            console.log(err);
+            if (err) console.log(err); // error prompt message
         });
         //alert(this.state.email + " " + this.state.password );
     }
@@ -99,7 +117,7 @@ class Signup extends Component {
     render() {
         return(
             <div>
-                <form className="form-signin" action="/register" method="post">
+                <form className="form-signin">
                     <h2 className="form-signin-heading">Please sign up</h2>
                     <label htmlFor="inputName" className="sr-only">Name</label>
                     <input type="name" onChange={this.handleNameChange} id="inputName" className="form-control" placeholder="Name" required />
