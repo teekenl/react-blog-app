@@ -18,12 +18,25 @@ class homeContent extends Component {
     constructor(props){
         super(props);
         this.state ={
+            post: ''
         };
         this.postRenderEvent =  this.postRenderEvent.bind(this);
     }
 
+    componentDidMount(){
+        this.postRenderEvent();
+    }
+
     postRenderEvent(){
-        return 0;
+        axios.get('/allPost',{
+            params:{
+                user_id: "INSERT YOUR USER ID"
+            }
+        }).then(function(data) {
+            this.setState({
+                post: data
+            })
+        });
     }
 
     render(){
