@@ -23,21 +23,32 @@ class homeContent extends Component {
         this.postRenderEvent =  this.postRenderEvent.bind(this);
     }
 
-    componentDidMount(){
-        this.postRenderEvent();
-    }
-
     postRenderEvent(){
+        let postRenderArray = [];
         axios.get('/allPost',{
             params:{
-                user_id: "INSERT YOUR USER ID"
+                user_id: localStorage.getItem("user_id")
             }
         }).then(function(data) {
             this.setState({
                 post: data
             })
         });
+
+        console.log(localStorage.getItem("user_id"));
+
+        this.state.post.map(function(_post, i){
+             postRenderArray.push(
+                <a href="#" className="list-group-item active" key={i}>
+                    <h4 className="list-group-item-heading">_post.title</h4>
+                    <p className="list-group-item-text">_post.subject</p>
+                </a>
+            );
+        });
+
+        return postRenderArray.length > 0 ? postRenderArray : "You haven't post anything yet.";
     }
+
 
     render(){
         return(
@@ -53,13 +64,9 @@ class homeContent extends Component {
                     <h3 className="text-muted">React Blog App</h3>
                 </div>
                 <div className="jumbotron">
-                    <div className="list-group"> <a href="#" className="list-group-item active">
-                        <h4 className="list-group-item-heading">List group item heading</h4>
-                        <p className="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                    </a> <a href="#" className="list-group-item active" >
-                        <h4 className="list-group-item-heading">List group item heading</h4>
-                        <p className="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                        </a> <a href="#" className="list-group-item"> <h4 className="list-group-item-heading">List group item heading</h4> <p className="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p> </a> </div>
+                    <div className="list-group">
+                        {this.postRenderEvent()}
+                    </div>
                 </div>
                 <Footer/>
             </div>
