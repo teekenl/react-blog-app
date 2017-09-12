@@ -27,7 +27,7 @@ class homeContent extends Component {
         let postRenderArray = [];
         axios.get('/allPost',{
             params:{
-                user_id: localStorage.getItem("user_id")
+                user_id: JSON.parse(localStorage.getItem("user_id")).replace("\"","");
             }
         }).then(function(data) {
             this.setState({
@@ -35,22 +35,21 @@ class homeContent extends Component {
             })
         });
 
-        console.log(localStorage.getItem("user_id"));
-
-        this.state.post.map(function(_post, i){
+        console.log(this.state.post);
+        /*this.state.post.map(function(_post, i){
              postRenderArray.push(
                 <a href="#" className="list-group-item active" key={i}>
                     <h4 className="list-group-item-heading">_post.title</h4>
                     <p className="list-group-item-text">_post.subject</p>
                 </a>
             );
-        });
+        });*/
 
-        return postRenderArray.length > 0 ? postRenderArray : "You haven't post anything yet.";
-    }
+    return postRenderArray.length > 0 ? postRenderArray : "You haven't post anything yet.";
+}
 
 
-    render(){
+render(){
         return(
             <div>
                 <div className="header clearfix">
@@ -61,7 +60,7 @@ class homeContent extends Component {
                             <li role="presentation"><a href="/logout">Logout</a></li>
                         </ul>
                     </nav>
-                    <h3 className="text-muted">React Blog App</h3>
+                    <h3 className="text-muted">Blogging Application</h3>
                 </div>
                 <div className="jumbotron">
                     <div className="list-group">
@@ -86,7 +85,7 @@ class addContent extends Component{
                             <li role="presentation"><a href="/logout">Logout</a></li>
                         </ul>
                     </nav>
-                    <h3 className="text-muted">React Blog App</h3>
+                    <h3 className="text-muted">Blogging Application</h3>
                 </div>
                 <AddPostForm />
                 <Footer/>

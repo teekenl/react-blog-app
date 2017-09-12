@@ -33,7 +33,7 @@ class Signin extends Component {
             if(response.errorCode) {
                 throw response.errorMessage;
             } else if(response && response !== "Failure") {
-                localStorage.setItem("userid",response._id);
+                localStorage.setItem("user_id",JSON.stringify(response._id));
                 localStorage.setItem("username",response.name);
                 window.location="home";
             } else{
@@ -100,7 +100,7 @@ class Signup extends Component {
             if(response.errorCode) {
                 throw response.errorMessage;
             } else if(response && response !== "Failure"){
-                localStorage.setItem("user_id",response._id);
+                localStorage.setItem("user_id",JSON.stringify(response._id));
                 localStorage.setItem("username",response.name);
                 window.location="home";
             } else{
