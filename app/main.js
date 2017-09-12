@@ -29,12 +29,11 @@ class Signin extends Component {
             email: this.state.email,
             password: this.state.password
         }).then(function(response) {
-            console.log(response);
-            if(response.errorCode) {
-                throw response.errorMessage;
-            } else if(response && response !== "Failure") {
-                localStorage.setItem("user_id",JSON.stringify(response._id));
-                localStorage.setItem("username",response.name);
+            if(response.data.errorCode) {
+               console.log("error");
+            } else if(response.data && response.data !== "Failure") {
+                localStorage.setItem("user_id",response.data._id);
+                localStorage.setItem("username",response.data.name);
                 window.location="home";
             } else{
                 console.log("Please don't leave username or password blank");
@@ -97,11 +96,11 @@ class Signup extends Component {
             'email': this.state.email,
             'password': this.state.password
         }).then(function(response) {
-            if(response.errorCode) {
-                throw response.errorMessage;
-            } else if(response && response !== "Failure"){
-                localStorage.setItem("user_id",JSON.stringify(response._id));
-                localStorage.setItem("username",response.name);
+            if(response.data.errorCode) {
+                return new Promise.reject(response.message);
+            } else if(response.data && response.data !== "Failure"){
+                localStorage.setItem("user_id", response.data._id);
+                localStorage.setItem("username",response.data.name);
                 window.location="home";
             } else{
                 console.log("Please don't leave username, email or password blank");

@@ -18,59 +18,66 @@ class homeContent extends Component {
     constructor(props){
         super(props);
         this.state ={
-            post: ''
+            postHTML: ''
         };
-        this.postRenderEvent =  this.postRenderEvent.bind(this);
-    }
 
-    postRenderEvent(){
-        let postRenderArray = [];
+    }
+    componentWillMount(){
+
+        console.log("will mount");
         axios.get('/allPost',{
             params:{
-                user_id: JSON.parse(localStorage.getItem("user_id")).replace("\"","");
+                user_id: localStorage.getItem("user_id"),
+                username: localStorage.getItem("username")
             }
-        }).then(function(data) {
-            this.setState({
-                post: data
+        }).then(function(response) {
+            let postRenderResult = response.data;
+            return new Promise(function(resolve, reject){
+                resolve(postRenderResult);
             })
+        }).then(function(post) {
+            let postHTML = '';
+            if(post.length > 0 ) {
+                post.map(function(_post,i){
+
+                    postHTML += <a href="#" className="list-group-item active" key={i}>;
+                    postHTML +=<h4 className="list-group-item-heading">_post.title</h4>;
+                    postHTML +=<p className="list-group-item-text">_post.subject</p></a>;
+
+                });
+                this.setState({
+                    postHTML: postHTML
+                });
+            }
         });
-
-        console.log(this.state.post);
-        /*this.state.post.map(function(_post, i){
-             postRenderArray.push(
-                <a href="#" className="list-group-item active" key={i}>
-                    <h4 className="list-group-item-heading">_post.title</h4>
-                    <p className="list-group-item-text">_post.subject</p>
-                </a>
-            );
-        });*/
-
-    return postRenderArray.length > 0 ? postRenderArray : "You haven't post anything yet.";
-}
-
-
-render(){
-        return(
-            <div>
-                <div className="header clearfix">
-                    <nav>
-                        <ul className="nav nav-pills pull-right">
-                            <li role="presentation" className="active"><a>Home</a></li>
-                            <li role="presentation"><Link to="/add">Add</Link></li>
-                            <li role="presentation"><a href="/logout">Logout</a></li>
-                        </ul>
-                    </nav>
-                    <h3 className="text-muted">Blogging Application</h3>
-                </div>
-                <div className="jumbotron">
-                    <div className="list-group">
-                        {this.postRenderEvent()}
-                    </div>
-                </div>
-                <Footer/>
-            </div>
-        );
     }
+
+    componentDidMount(){
+        console.log("did mount");
+    }
+
+    render(){
+            return(
+                <div>
+                    <div className="header clearfix">
+                        <nav>
+                            <ul className="nav nav-pills pull-right">
+                                <li role="presentation" className="active"><a>Home</a></li>
+                                <li role="presentation"><Link to="/add">Add</Link></li>
+                                <li role="presentation"><a href="/logout">Logout</a></li>
+                            </ul>
+                        </nav>
+                        <h3 className="text-muted">Blogging Application</h3>
+                    </div>
+                    <div className="jumbotron">
+                        <div className="list-group">
+                            {this.state.postHTML}
+                        </div>
+                    </div>
+                    <Footer/>
+                </div>
+            );
+        }
 }
 
 class addContent extends Component{
