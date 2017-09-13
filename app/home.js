@@ -13,6 +13,7 @@ class App extends Component {
             <Router history={browserHistory}>
                 <Route path="/home" component={homeContent} />
                 <Route path="/add" component={addContent}/>
+                <Route path="/edit" component={editContent}/>
             </Router>
         );
     }
@@ -24,7 +25,6 @@ class homeContent extends Component {
         this.state ={
             post: []
         };
-
     }
 
     componentDidMount(){
@@ -43,6 +43,26 @@ class homeContent extends Component {
 
     editPostHandlerEvent(_id){
         // INSERT TODO HERE
+        axios.post('/editPost',{post_id: _id},
+            function(response){
+            if(response.data.errorCode) {
+                return new Promise(function(resolve, reject){
+                    console.log("error");
+                    reject(response.data.message);
+                }).catch(function(err){
+                    console.log(err);
+                });
+            } else{
+                return new Promise(function(resolve, reject) {
+                    resolve(response.data);
+                });
+            }
+        }).then(function (success) {
+            if(success) {
+                this.props.history.push('/edit');
+            }
+        }) ;
+
     }
 
     deletePostHandlerEvent(_id){
@@ -193,6 +213,20 @@ class AddPostForm extends Component {
                     </button>
                 </div>
             </div>
+        );
+    }
+}
+
+class editContent extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        };
+    }
+    render(){
+        return(
+            <div>s</div>
         );
     }
 }
