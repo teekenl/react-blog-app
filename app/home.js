@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import axios from  'axios';
+import axios from 'axios';
 import {Router, Route, Link, IndexRoute, IndexLink, hashHistory, browserHistory} from 'react-router';
 
 class App extends Component {
@@ -18,47 +18,28 @@ class homeContent extends Component {
     constructor(props){
         super(props);
         this.state ={
-            postHTML: ''
+            post: []
         };
-
     }
-    componentWillMount(){
 
-        console.log("will mount");
-        axios.get('/allPost',{
-            params:{
-                user_id: localStorage.getItem("user_id"),
-                username: localStorage.getItem("username")
-            }
-        }).then(function(response) {
+    componentDidMount(){
+        console.log("did mount");
+        let self = this;
+        axios.get('/allPost').then(function(response) {
             let postRenderResult = response.data;
             return new Promise(function(resolve, reject){
                 resolve(postRenderResult);
             })
         }).then(function(post) {
-            let postHTML = '';
-            if(post.length > 0 ) {
-                post.map(function(_post,i){
-
-                    postHTML += <a href="#" className="list-group-item active" key={i}>;
-                    postHTML +=<h4 className="list-group-item-heading">_post.title</h4>;
-                    postHTML +=<p className="list-group-item-text">_post.subject</p></a>;
-
-                });
-                this.setState({
-                    postHTML: postHTML
-                });
-            }
+            self.setState({
+                post: post
+            })
         });
-    }
-
-    componentDidMount(){
-        console.log("did mount");
     }
 
     render(){
             return(
-                <div>
+                <div className="container">
                     <div className="header clearfix">
                         <nav>
                             <ul className="nav nav-pills pull-right">
@@ -69,9 +50,17 @@ class homeContent extends Component {
                         </nav>
                         <h3 className="text-muted">Blogging Application</h3>
                     </div>
+
                     <div className="jumbotron">
                         <div className="list-group">
-                            {this.state.postHTML}
+                            {
+                                this.state.post.map(function(_post,index) {
+                                    return <a href="#" key={index} className="list-group-item active">
+                                        <h4 className="list-group-item-heading">{_post.title}</h4>
+                                        <p className="list-group-item-text">{_post.subject}</p>
+                                    </a>
+                                })
+                            }
                         </div>
                     </div>
                     <Footer/>
@@ -159,7 +148,6 @@ class AddPostForm extends Component {
         );
     }
 }
-
 
 class Footer extends Component {
     render() {
