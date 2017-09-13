@@ -13,7 +13,7 @@ class App extends Component {
             <Router history={browserHistory}>
                 <Route path="/home" component={homeContent} />
                 <Route path="/add" component={addContent}/>
-                <Route path="/edit" component={editContent}/>
+                <Route path="/edit/:post_id" component={editContent}/>
             </Router>
         );
     }
@@ -43,26 +43,7 @@ class homeContent extends Component {
 
     editPostHandlerEvent(_id){
         // INSERT TODO HERE
-        axios.post('/editPost',{post_id: _id},
-            function(response){
-            if(response.data.errorCode) {
-                return new Promise(function(resolve, reject){
-                    console.log("error");
-                    reject(response.data.message);
-                }).catch(function(err){
-                    console.log(err);
-                });
-            } else{
-                return new Promise(function(resolve, reject) {
-                    resolve(response.data);
-                });
-            }
-        }).then(function (success) {
-            if(success) {
-                this.props.history.push('/edit');
-            }
-        }) ;
-
+        this.props.history.push('/edit/'+_id);
     }
 
     deletePostHandlerEvent(_id){
@@ -209,7 +190,7 @@ class AddPostForm extends Component {
 
                 <div className="form-group">
                     <textarea className="form-control" onChange={this.subjectChangeEvent} type="textarea" id="subject" placeholder="Subject" maxlength="140" rows="7"></textarea>
-                    <button className="btn btn-lg btn-primary btn-block" type="button" onClick={this.addPost}> Sign in
+                    <button className="btn btn-lg btn-primary btn-block" type="button" onClick={this.addPost}> New post
                     </button>
                 </div>
             </div>
@@ -221,12 +202,66 @@ class editContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            title:'',
+            subject:''
         };
+
+        this.titleChangeEvent = this.titleChangeEvent.bind(this);
+        this.subjectChangeEvent = this.subjectChangeEvent.bind(this);
     }
+
+    componentDidMount(){
+        console.log("did mount");
+        let self = this;
+        axios.post('/editPost',{post_id: this.props.param.post_id},
+            function(response){
+                if(response.data.errorCode) {
+                    return new Promise(function(resolve, reject){
+                        console.log("error");
+                        reject(response.data.message);
+                    }).catch(function(err){
+                        console.log(err);
+                    });
+                } else{
+                    return new Promise(function(resolve, reject) {
+                        resolve(response.data);
+                    });
+                }
+            }).then(function (success) {
+            if(success) {
+                self.setState({
+                    title: success.title,
+                    subject: success.subject
+                });
+            }
+        }) ;
+    }
+
+    titleChangeEvent(e){
+        this.setState({
+            title : e.target.value
+        });
+    }
+
+    subjectChangeEvent(e) {
+        this.setState({
+            subject: e.target.value
+        });
+    }
+
     render(){
         return(
-            <div>s</div>
+            <div>
+                <div className="form-group">
+                    <input type="text" onChange={this.titleChangeEvent} value={this.state.title} className="form-control" id="title" name="title" placeholder="Title" required />
+                </div>
+
+                <div className="form-group">
+                    <textarea className="form-control" onChange={this.subjectChangeEvent} type="textarea" id="subject" placeholder="Subject" maxlength="140" rows="7">{this.state.subject}</textarea>
+                    <button className="btn btn-lg btn-primary btn-block" type="button" onClick={this.editPost}> Update
+                    </button>
+                </div>
+            </div>
         );
     }
 }
