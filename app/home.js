@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import {Router, Route, Link, IndexRoute, IndexLink, hashHistory, browserHistory} from 'react-router';
 
+const myStyle = {
+    cursor: 'pointer'
+};
+
 class App extends Component {
     render() {
         return(
@@ -20,10 +24,10 @@ class homeContent extends Component {
         this.state ={
             post: []
         };
+
     }
 
     componentDidMount(){
-        console.log("did mount");
         let self = this;
         axios.get('/allPost').then(function(response) {
             let postRenderResult = response.data;
@@ -33,7 +37,35 @@ class homeContent extends Component {
         }).then(function(post) {
             self.setState({
                 post: post
-            })
+            });
+        });
+    }
+
+    editPostHandlerEvent(_id){
+        // INSERT TODO HERE
+    }
+
+    deletePostHandlerEvent(_id){
+
+        axios.post('/deletePost',{
+           post_id: _id
+        },function(response){
+            if(response.data.errorCode) {
+                return new Promise(function(resolve, reject){
+                    console.log("error");
+                    reject(response.data.message);
+                }).catch(function(err){
+                    console.log(err);
+                });
+            } else{
+                return new Promise(function(resolve, reject) {
+                    resolve(response.data);
+                })
+            }
+        }).then(function(success){
+            if(success) console.log("success");
+        }).catch(function(err){
+            if(err) throw err;
         });
     }
 
@@ -51,18 +83,34 @@ class homeContent extends Component {
                         <h3 className="text-muted">Blogging Application</h3>
                     </div>
 
-                    <div className="jumbotron">
-                        <div className="list-group">
+                    <table className="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>.</th>
+                                <th>Title</th>
+                                <th>Subject</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             {
-                                this.state.post.map(function(_post,index) {
-                                    return <a href="#" key={index} className="list-group-item active">
-                                        <h4 className="list-group-item-heading">{_post.title}</h4>
-                                        <p className="list-group-item-text">{_post.subject}</p>
-                                    </a>
-                                })
+                                this.state.post.map(function(_post, index) {
+                                    return <tr key={index}>
+                                                <td>{index+1}</td>
+                                                <td>{_post.title}</td>
+                                                <td>{_post.subject}</td>
+                                                <td >
+                                                    <span style={myStyle} onClick={this.editPostHandlerEvent.bind(this,_post._id)} className="glyphicon glyphicon-pencil"></span>
+                                                </td>
+                                                <td>
+                                                    <span style={myStyle} onClick={this.deletePostHandlerEvent.bind(this,_post._id)} className="glyphicon glyphicon-remove"></span>
+                                                </td>
+                                             </tr>
+                                }.bind(this))
                             }
-                        </div>
-                    </div>
+                        </tbody>
+                    </table>
                     <Footer/>
                 </div>
             );
